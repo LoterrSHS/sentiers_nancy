@@ -1,128 +1,326 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="data/sentiers_a_prospecter_1.js"></script>
+        <script src="data/sentiers_lineaires_2.js"></script>
+        <script src="data/myPhotos_3.js"></script>
+        <script src="data/NancyLimites_4.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[48.687301934639876,6.12507179661568],[48.72957831706104,6.232348289720334]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a> &middot; <a href="https://loterr.univ-lorraine.fr/">Loterr</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_ESRIStandard_0');
+        map.getPane('pane_ESRIStandard_0').style.zIndex = 400;
+        var layer_ESRIStandard_0 = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+            pane: 'pane_ESRIStandard_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_ESRIStandard_0;
+        map.addLayer(layer_ESRIStandard_0);
+        function pop_sentiers_a_prospecter_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nature du Sol :</th>\
+                        <td>' + (feature.properties['nat_sol'] !== null ? autolinker.link(feature.properties['nat_sol'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Dangers :</th>\
+                        <td>' + (feature.properties['danger'] !== null ? autolinker.link(feature.properties['danger'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Largeur (m) :</th>\
+                        <td>' + (feature.properties['largeur'] !== null ? autolinker.link(feature.properties['largeur'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Observations :</th>\
+                        <td>' + (feature.properties['observ_t'] !== null ? autolinker.link(feature.properties['observ_t'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Longueur du segment (m) :</th>\
+                        <td>' + (feature.properties['longueur'] !== null ? autolinker.link(feature.properties['longueur'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
 
-        #map {
-            background-color: #ffffff
+        function style_sentiers_a_prospecter_1_0() {
+            return {
+                pane: 'pane_sentiers_a_prospecter_1',
+                opacity: 1,
+                color: 'rgba(255,97,97,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
         }
-        th {
-            text-align: right;
-            vertical-align: top;
+        map.createPane('pane_sentiers_a_prospecter_1');
+        map.getPane('pane_sentiers_a_prospecter_1').style.zIndex = 401;
+        map.getPane('pane_sentiers_a_prospecter_1').style['mix-blend-mode'] = 'normal';
+        var layer_sentiers_a_prospecter_1 = new L.geoJson(json_sentiers_a_prospecter_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_sentiers_a_prospecter_1',
+            layerName: 'layer_sentiers_a_prospecter_1',
+            pane: 'pane_sentiers_a_prospecter_1',
+            onEachFeature: pop_sentiers_a_prospecter_1,
+            style: style_sentiers_a_prospecter_1_0,
+        });
+        bounds_group.addLayer(layer_sentiers_a_prospecter_1);
+        map.addLayer(layer_sentiers_a_prospecter_1);
+        function pop_sentiers_lineaires_2(feature, layer) {
+            var popupContent = '<table>\
+                <tr>\
+                        <th scope="row">Nature du Sol :</th>\
+                        <td>' + (feature.properties['nat_sol'] !== null ? autolinker.link(feature.properties['nat_sol'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Dangers :</th>\
+                        <td>' + (feature.properties['danger'] !== null ? autolinker.link(feature.properties['danger'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Largeur (m) :</th>\
+                        <td>' + (feature.properties['largeur'] !== null ? autolinker.link(feature.properties['largeur'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Observations :</th>\
+                        <td>' + (feature.properties['observ_t'] !== null ? autolinker.link(feature.properties['observ_t'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Longueur du segment (m) :</th>\
+                        <td>' + (feature.properties['longueur'] !== null ? autolinker.link(feature.properties['longueur'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
         }
-        .info {
-            padding: 6px 8px;
-            font: 14px/16px Arial, Helvetica, sans-serif;
-            background: white;
-            background: rgba(255,255,255,0.8);
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            border-radius: 5px;
+
+        function style_sentiers_lineaires_2_0() {
+            return {
+                pane: 'pane_sentiers_lineaires_2',
+                opacity: 1,
+                color: 'rgba(255,97,97,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
         }
-        .info h2 {
-            margin: 0 0 5px;
-            color: #777;
+        map.createPane('pane_sentiers_lineaires_2');
+        map.getPane('pane_sentiers_lineaires_2').style.zIndex = 402;
+        map.getPane('pane_sentiers_lineaires_2').style['mix-blend-mode'] = 'normal';
+        var layer_sentiers_lineaires_2 = new L.geoJson(json_sentiers_lineaires_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_sentiers_lineaires_2',
+            layerName: 'layer_sentiers_lineaires_2',
+            pane: 'pane_sentiers_lineaires_2',
+            onEachFeature: pop_sentiers_lineaires_2,
+            style: style_sentiers_lineaires_2_0,
+        });
+        bounds_group.addLayer(layer_sentiers_lineaires_2);
+        map.addLayer(layer_sentiers_lineaires_2);
+        function pop_myPhotos_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Images'] !== null ? autolinker.link(feature.properties['Images'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
         }
-        .leaflet-container {
-            background: #fff;
-            padding-right: 10px;
+
+        function style_myPhotos_3_0() {
+            return {
+                pane: 'pane_myPhotos_3',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/camera-icon.svg',
+            iconSize: [26.0, 26.0]
+        }),
+                interactive: true,
+            }
         }
-        .leaflet-popup-content {
-            width:auto;
-            padding-right:10px;
+        map.createPane('pane_myPhotos_3');
+        map.getPane('pane_myPhotos_3').style.zIndex = 403;
+        map.getPane('pane_myPhotos_3').style['mix-blend-mode'] = 'normal';
+        var layer_myPhotos_3 = new L.geoJson(json_myPhotos_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_myPhotos_3',
+            layerName: 'layer_myPhotos_3',
+            pane: 'pane_myPhotos_3',
+            onEachFeature: pop_myPhotos_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_myPhotos_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_myPhotos_3);
+        map.addLayer(layer_myPhotos_3);
+        function pop_NancyLimites_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fid'] !== null ? autolinker.link(feature.properties['fid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['cat'] !== null ? autolinker.link(feature.properties['cat'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? autolinker.link(feature.properties['ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CODE_EPCI'] !== null ? autolinker.link(feature.properties['CODE_EPCI'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOM_EPCI'] !== null ? autolinker.link(feature.properties['NOM_EPCI'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TYPE_EPCI'] !== null ? autolinker.link(feature.properties['TYPE_EPCI'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
         }
-        .leaflet-tooltip {
-            background: none;
-            box-shadow: none;
-            border: none;
+
+        function style_NancyLimites_4_0() {
+            return {
+                pane: 'pane_NancyLimites_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(141,90,153,0.0)',
+                interactive: false,
+            }
         }
-        .leaflet-tooltip-left:before, .leaflet-tooltip-right:before {
-            border: 0px;
-        }
-        .fa, .leaflet-container, a {
-            color: white !important;
-        }
-        .leaflet-control-zoom-in, .leaflet-control-zoom-out,
-        .leaflet-control-locate a,
-        .leaflet-touch .leaflet-control-geocoder-icon,
-        .leaflet-control-search .search-button,
-         .leaflet-control-measure {
-            background-color: #739473 !important;
-            border-radius: 0px !important;
-            color: white !important;
-        }
-        .abstract {
-            font: bold 18px 'Lucida Console', Monaco, monospace;
-            text-indent: 1px;
-            background-color: #f8f8f8 !important;
-            width: 30px !important;
-            color: #000000 !important;
-            height: 30px !important;
-            text-align: center !important;
-            line-height: 30px !important;
-        }
-        .abstractUncollapsed {
-            padding: 6px 8px;
-            font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
-            background-color:#f8f8f8 !important;
-            color: #000000 !important;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            border-radius: 5px;
-            max-width: 40%;
-        }
-        .leaflet-touch .leaflet-control-layers,
-        .leaflet-touch .leaflet-bar,
-        .leaflet-control-search,
-        .leaflet-control-measure {
-            border: 3px solid rgba(255,255,255,.4) !important;
-        }
-        .leaflet-control-attribution a {
-            color: #0078A8 !important;
-        }
-        .leaflet-control-scale-line {
-            border: 2px solid #f8f8f8 !important;
-            border-top: none !important;
-            color: black !important;
-        }
-        .leaflet-control-search .search-button,
-        .leaflet-container .leaflet-control-search,
-        .leaflet-control-measure {
-            box-shadow: none !important;
-        }
-        .leaflet-control-search .search-button {
-            width: 30px !important;
-            height: 30px !important;
-            font-size: 13px !important;
-            text-align: center !important;
-            line-height: 30px !important;
-        }
-        .leaflet-control-measure .leaflet-control {
-            width: 30px !important;
-            height: 30px !important;
-        }
-        .leaflet-container .leaflet-control-search{
-            background: none !important;
-        }
-        .leaflet-control-search .search-input {
-            margin: 0px 0px 0px 0px !important;
-            height: 30px !important;
-        }
-        .leaflet-control-measure {
-            background: none!important;
-            border-radius: 4px !important;
-        }
-        .leaflet-control-measure .leaflet-control-measure-interaction {
-            background-color: #f8f8f8 !important;
-        }
-        .leaflet-touch .leaflet-control-measure
-        .leaflet-control-measure-toggle,
-        .leaflet-touch .leaflet-control-measure
-        .leaflet-control-measure-toggle:hover {
-            width: 30px !important;
-            height: 30px !important;
-            border-radius: 0px !important;
-            background-color: #739473 !important;
-            color: white !important;
-            font-size: 13px;
-            line-height: 30px;
-            text-align: center;
-            text-indent: 0%;
-        }
-        .leaflet-control-layers-toggle {
-            background-color: #f8f8f8 !important;
-        }
+        map.createPane('pane_NancyLimites_4');
+        map.getPane('pane_NancyLimites_4').style.zIndex = 404;
+        map.getPane('pane_NancyLimites_4').style['mix-blend-mode'] = 'normal';
+        var layer_NancyLimites_4 = new L.geoJson(json_NancyLimites_4, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_NancyLimites_4',
+            layerName: 'layer_NancyLimites_4',
+            pane: 'pane_NancyLimites_4',
+            onEachFeature: pop_NancyLimites_4,
+            style: style_NancyLimites_4_0,
+        });
+        bounds_group.addLayer(layer_NancyLimites_4);
+        map.addLayer(layer_NancyLimites_4);
+        map.on("zoomend", function(){
+
+                if (map.hasLayer(layer_sentiers_a_prospecter_1)) {
+                    if (map.getZoom() <= 14 && map.getZoom() >= 19) {
+                        layer_sentiers_a_prospecter_1.eachLayer(function (layer) {
+                            layer.openTooltip();
+                        });
+                    } else {
+                        layer_sentiers_a_prospecter_1.eachLayer(function (layer) {
+                            layer.closeTooltip();
+                        });
+                    }
+                }
+        });
+        setBounds();
+        var i = 0;
+        layer_sentiers_a_prospecter_1.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((exp_label_sentiers_a_prospecter_1_eval_expression(context) !== null?String('<div style="color: #000000; font-size: 8pt; font-family: \'MS Shell Dlg 2\', sans-serif;">' + exp_label_sentiers_a_prospecter_1_eval_expression(context)) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_sentiers_a_prospecter_1'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+                if (map.hasLayer(layer_sentiers_a_prospecter_1)) {
+                    if (map.getZoom() <= 14 && map.getZoom() >= 19) {
+                        layer_sentiers_a_prospecter_1.eachLayer(function (layer) {
+                            layer.openTooltip();
+                        });
+                    } else {
+                        layer_sentiers_a_prospecter_1.eachLayer(function (layer) {
+                            layer.closeTooltip();
+                        });
+                    }
+                }
+        resetLabels([layer_sentiers_a_prospecter_1]);
+        map.on("zoomend", function(){
+            resetLabels([layer_sentiers_a_prospecter_1]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_sentiers_a_prospecter_1]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_sentiers_a_prospecter_1]);
+        });
+        </script>
+    </body>
+</html>
