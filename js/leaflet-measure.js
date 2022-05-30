@@ -6538,7 +6538,7 @@ module.exports = {
 
 module.exports = {
   'measure': 'Mesure',
-  'measureDistancesAndAreas': 'Mesure de distance et de surfaces',
+  'measureDistancesAndAreas': 'Mesure de distances et de surfaces',
   'createNewMeasurement': 'Créer une nouvelle mesure',
   'startCreating': 'Commencer à mesurer en cliquant sur la carte (avec le curseur  de la main)',
   'finishMeasurement': 'Fermer la fenêtre',
